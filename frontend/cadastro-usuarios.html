@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntegraMedic - Controle de Usuários</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-900">
+
+    <div class="flex h-screen overflow-hidden bg-gray-100">
+        
+        <!-- Sidebar Menu -->
+        <aside class="w-64 bg-blue-900 text-white flex flex-col hidden md:flex">
+            <div class="h-16 flex items-center justify-center border-b border-blue-800">
+                <h1 class="text-2xl font-bold">IntegraMedic 🏥</h1>
+            </div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">📋 Cadastro de Paciente</a>
+                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">📅 Agenda Geral</a>
+                <!-- Novo Menu -->
+                <a href="#" class="block px-4 py-2 bg-blue-800 rounded-md font-medium mt-6 border-t border-blue-700 pt-4">🔐 Controle de Usuários</a>
+            </nav>
+            <div class="p-4 border-t border-blue-800 text-sm">
+                <button id="logoutBtn" class="text-gray-300 hover:text-white w-full text-left"> Sair do Sistema </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto focus:outline-none">
+            
+            <header class="bg-white shadow h-16 flex items-center justify-between px-6">
+                <h2 class="text-xl font-semibold text-gray-800">Gerenciamento de Equipe / Acessos</h2>
+                <div class="flex items-center">
+                    <span id="loggedUserName" class="text-sm font-bold text-gray-700 mr-2">Carregando...</span>
+                    <div id="userInitials" class="h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">...</div>
+                </div>
+            </header>
+
+            <div class="p-6 max-w-4xl mx-auto">
+                
+                <!-- Alerta de Segurança -->
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                    <div class="flex">
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                Defina com cuidado o nível de acesso. Apenas usuários com permissão <strong>TOTAL</strong> podem alterar configurações financeiras e excluir registros médicos sensíveis.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="bg-white shadow-md rounded-lg p-8">
+                    
+                    <h3 class="text-lg font-medium border-b pb-2 mb-6 text-gray-800">Novo Colaborador</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Nome Completo *</label>
+                            <input type="text" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Jonatas (Animal)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">E-mail Profissional *</label>
+                            <input type="email" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="jonatas@integramedic.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Senha Provisória *</label>
+                            <input type="password" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                        </div>
+                        
+                        <!-- Nível de Permissão (Roles) -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Nível de Permissão do Sistema *</label>
+                            <select id="roleSelect" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
+                                <option value="" disabled selected>Escolha a função...</option>
+                                <option id="optTotal" value="TOTAL" class="font-bold text-red-600">🚨 TOTAL (Sócio/Admin) - Acesso irrestrito (Financeiro, Logs, Tudo)</option>
+                                <option value="MEDIANA" class="font-medium text-blue-600">🛡️ MEDIANA (Gerência/Médico) - Edita prontuários, cria agendamentos, mas não apaga faturas.</option>
+                                <option value="CONSULTA" class="font-medium text-green-600">👁️ APENAS CONSULTA (Recepção Base) - Visualiza agendas e cadastra paciente. Não apaga nada.</option>
+                            </select>
+                            <p id="roleWarning" class="text-xs text-red-500 mt-2 hidden">⚠️ Seu nível atual não permite criar usuários com acesso TOTAL.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end space-x-3">
+                        <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-900 hover:bg-blue-800 focus:outline-none">
+                            Cadastrar Usuário
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script de Validação de Permissões -->
+    <script>
+        // 1. Verifica se está logado
+        const role = localStorage.getItem('integraMedic_userRole');
+        const name = localStorage.getItem('integraMedic_userName');
+
+        if (!role || !name) {
+            // Se não tiver login, volta pro index!
+            window.location.href = 'index.html';
+        } else {
+            // Atualiza Header Visualmente
+            document.getElementById('loggedUserName').innerText = role + ': ' + name;
+            document.getElementById('userInitials').innerText = name.charAt(0).toUpperCase();
+
+            // 2. Lógica Restritiva de Cadastro: Só DONO ou MEDICO_ADMIN pode cadastrar nível TOTAL
+            // Como criamos só DONO agora, vamos usar essa tag
+            if (role !== 'DONO' && role !== 'MEDICO_ADMIN') {
+                const optTotal = document.getElementById('optTotal');
+                optTotal.disabled = true; // Desabilita a opção
+                optTotal.classList.add('hidden'); // Oculta a opção
+                document.getElementById('roleWarning').classList.remove('hidden'); // Mostra o aviso
+            }
+        }
+
+        // Função de Logout
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.clear(); // Limpa as credenciais locais
+            window.location.href = 'index.html'; // Volta pra tela de login
+        });
+    </script>
+</body>
+</html>

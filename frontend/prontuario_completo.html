@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prontuário Eletrônico - Completo</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #3498db; --success: #2ecc71; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; overflow: hidden; }
+        
+        /* Lateral Esquerda - Resumo do Paciente */
+        .sidebar { width: 320px; background: #fff; border-right: 1px solid #eee; padding: 25px; }
+        .patient-header { text-align: center; margin-bottom: 20px; }
+        .avatar { width: 80px; height: 80px; background: #eee; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: #aaa; }
+        .patient-name { font-size: 22px; font-weight: bold; color: var(--primary); margin: 0; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: #fff; margin-top: 5px; }
+        .badge-insurance { background-color: var(--secondary); }
+        
+        .vital-signs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .vital-box { background: var(--bg); padding: 10px; border-radius: 6px; text-align: center; border: 1px solid #eaeaea; }
+        .vital-value { font-size: 18px; font-weight: bold; color: var(--primary); }
+        .vital-label { font-size: 11px; color: #666; text-transform: uppercase; }
+        .alert-box { background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 6px; margin-top: 15px; font-size: 13px; font-weight: 600; }
+
+        /* Área Principal */
+        .main-content { flex: 1; display: flex; flex-direction: column; background: #fafbfc; }
+        .tabs { display: flex; background: #fff; border-bottom: 1px solid #eee; }
+        .tab { padding: 15px 25px; font-weight: 600; color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: 0.2s; }
+        .tab:hover { color: var(--primary); }
+        .tab.active { color: var(--secondary); border-bottom-color: var(--secondary); }
+        
+        .tab-content { padding: 25px; overflow-y: auto; height: 600px; display: none; }
+        .tab-content.active { display: block; }
+        .section-title { font-size: 18px; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 0; margin-bottom: 15px; }
+        
+        /* Formulários e Cards */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
+        .form-group textarea, .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; box-sizing: border-box; }
+        
+        .card { background: #fff; border: 1px solid #eee; border-radius: 6px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        
+        /* Histórico e Timeline */
+        .timeline { margin-top: 20px; border-left: 2px solid #eee; padding-left: 15px; }
+        .timeline-item { margin-bottom: 20px; position: relative; }
+        .timeline-item::before { content: ''; width: 10px; height: 10px; background: var(--secondary); border-radius: 50%; position: absolute; left: -21px; top: 5px; }
+        .timeline-date { font-size: 12px; font-weight: bold; color: #777; margin-bottom: 5px; }
+        .timeline-content { background: #fff; border: 1px solid #eaeaea; padding: 12px; border-radius: 6px; font-size: 14px; line-height: 1.5; }
+
+        /* AI Panel */
+        .ai-panel { background: #f0f7ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 15px; margin-bottom: 25px; }
+        .ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: #0369a1; font-weight: bold; }
+        .ai-btn { background: #0ea5e9; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
+        .ai-btn:hover { background: #0284c7; }
+        .ai-content { font-size: 14px; color: #334155; line-height: 1.5; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 4px; }
+        
+        .btn-primary { background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; float: right; }
+        .file-upload { border: 2px dashed #cbd5e1; padding: 20px; text-align: center; border-radius: 6px; background: #fff; cursor: pointer; color: #64748b; margin-bottom: 20px; }
+        .file-upload:hover { background: #f8fafc; border-color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Resumo Fixo Lateral -->
+    <div class="sidebar">
+        <div class="patient-header">
+            <div class="avatar">👤</div>
+            <h2 class="patient-name">Maria de Souza</h2>
+            <div class="badge badge-insurance">Convênio: Bradesco Saúde</div>
+            <div style="margin-top: 5px; font-size: 13px; color: #666;">ID: #84920 • Fem • 45 anos</div>
+        </div>
+
+        <div class="alert-box">
+            ⚠️ Alergias: Penicilina, Dipirona
+        </div>
+
+        <div class="vital-signs">
+            <div class="vital-box">
+                <div class="vital-value" id="imcVal">26.5</div>
+                <div class="vital-label">IMC (Sobrepeso)</div>
+            </div>
+            <div class="vital-box">
+                <div class="vital-value">68 kg</div>
+                <div class="vital-label">Peso</div>
+            </div>
+            <div class="vital-box">
+                <div class="vital-value">1.60 m</div>
+                <div class="vital-label">Altura</div>
+            </div>
+            <div class="vital-box">
+                <div class="vital-value">130/85</div>
+                <div class="vital-label">PA (mmHg)</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 25px;">
+            <h3 style="font-size: 14px; color: #555; margin-bottom: 10px;">Medicações em Uso</h3>
+            <ul style="font-size: 13px; color: #444; padding-left: 20px; margin: 0; line-height: 1.6;">
+                <li>Losartana 50mg (1x ao dia)</li>
+                <li>Metformina 500mg (2x ao dia)</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Área de Conteúdo -->
+    <div class="main-content">
+        <div class="tabs">
+            <div class="tab" onclick="switchTab('nova-consulta')" id="tab-btn-nova-consulta">Nova Consulta</div>
+            <div class="tab active" onclick="switchTab('historico')" id="tab-btn-historico">Histórico do Paciente</div>
+            <div class="tab" onclick="switchTab('receitas')" id="tab-btn-receitas">Prescrições</div>
+        </div>
+
+        <!-- TAB: Nova Consulta (Anamnese Atual) -->
+        <div id="tab-nova-consulta" class="tab-content">
+            <h2 class="section-title">Atendimento Atual - 21/03/2026</h2>
+            
+            <div class="form-group">
+                <label>Queixa Principal (QP)</label>
+                <input type="text" placeholder="Ex: Dor de cabeça intensa há 3 dias...">
+            </div>
+            
+            <div class="form-group">
+                <label>História da Moléstia Atual (HMA)</label>
+                <textarea rows="4" placeholder="Descreva os sintomas atuais, evolução..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Exame Físico / Observações</label>
+                <textarea rows="3" placeholder="Dados do exame clínico..."></textarea>
+            </div>
+            
+            <button class="btn-primary">Salvar Evolução</button>
+        </div>
+
+        <!-- TAB: Histórico do Paciente (IA, Exames e Anotações Passadas) -->
+        <div id="tab-historico" class="tab-content active">
+            
+            <!-- Painel da IA para Relatório do Médico -->
+            <div class="ai-panel">
+                <div class="ai-header">
+                    <span>🤖 Assistente Diagnóstico (Nero AI) - Visão Geral do Paciente</span>
+                    <button class="ai-btn" onclick="gerarRelatorio()">Gerar Relatório para o Médico</button>
+                </div>
+                <div class="ai-content" id="ai-report-area">
+                    <em>A IA consolidará o histórico de consultas, medicações, sinais vitais (peso/IMC) e todos os exames em anexo para apresentar um panorama clínico rápido para o médico.</em>
+                </div>
+            </div>
+
+            <!-- Central de Exames -->
+            <h2 class="section-title">Exames Anexados</h2>
+            <div class="file-upload" onclick="alert('Abre a janela de upload do Windows.')">
+                📁 <strong>Clique para anexar exames</strong> (PDF, Imagens, DICOM)<br>
+                <span style="font-size: 12px;">A IA irá extrair e indexar os resultados automaticamente.</span>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between;">
+                    <strong>Hemograma Completo + Lipidograma</strong>
+                    <span style="color: #666; font-size: 12px;">Data: 10/02/2026</span>
+                </div>
+                <div style="margin-top: 10px; font-size: 13px; color: #444;">
+                    <span style="color: #b91c1c;">⚠️ Colesterol Total: 240 mg/dL (Alto)</span><br>
+                    Glicemia de jejum: 98 mg/dL (Normal)<br>
+                    <a href="#" style="color: var(--secondary); text-decoration: none; display: inline-block; margin-top: 5px;">📄 Abrir Laudo (PDF)</a>
+                </div>
+            </div>
+
+            <!-- Linha do Tempo de Consultas Anteriores -->
+            <h2 class="section-title" style="margin-top: 30px;">Histórico de Consultas</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">10/02/2026 - Consulta de Rotina (#0890)</div>
+                    <div class="timeline-content">
+                        <strong>Médico:</strong> Dr. Silva<br>
+                        <strong>Evolução:</strong> Paciente compareceu para check-up. Queixa de fadiga leve. Solicitado exames de sangue gerais e mantida a medicação atual para hipertensão.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">15/08/2025 - Retorno (#0420)</div>
+                    <div class="timeline-content">
+                        <strong>Médico:</strong> Dr. Silva<br>
+                        <strong>Evolução:</strong> Pressão arterial estabilizada. Relata boa adaptação à Losartana. Orientada a manter perda de peso.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB: Prescrições -->
+        <div id="tab-receitas" class="tab-content">
+            <h2 class="section-title">Gerar Prescrição Médica</h2>
+            <div class="form-group">
+                <label>Medicamento</label>
+                <input type="text" placeholder="Digite o nome do medicamento (Busca automática)...">
+            </div>
+            <div class="form-group">
+                <label>Posologia / Instruções</label>
+                <textarea rows="2" placeholder="Ex: Tomar 1 comprimido de 8 em 8 horas por 5 dias."></textarea>
+            </div>
+            <button class="btn-primary" style="background: #34495e;">🖨️ Imprimir Receita</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function switchTab(tabName) {
+        // Esconder todos os conteúdos
+        const contents = document.getElementsByClassName('tab-content');
+        for(let c of contents) { c.classList.remove('active'); }
+        
+        // Remover classe active de todos os botões
+        const tabs = document.getElementsByClassName('tab');
+        for(let t of tabs) { t.classList.remove('active'); }
+        
+        // Mostrar o selecionado
+        document.getElementById('tab-' + tabName).classList.add('active');
+        document.getElementById('tab-btn-' + tabName).classList.add('active');
+    }
+
+    function gerarRelatorio() {
+        const area = document.getElementById('ai-report-area');
+        area.innerHTML = `
+            <strong>Relatório Clínico Consolidado:</strong><br><br>
+            Paciente feminino, 45 anos. <br>
+            <strong>Quadro Físico:</strong> Sobrepeso (IMC 26.5), peso atual 68kg. <br>
+            <strong>Uso Contínuo:</strong> Losartana 50mg e Metformina 500mg. <br>
+            <strong>Atenção (IA):</strong> O histórico de exames revela pico recente de colesterol (240 mg/dL em 10/02/2026). A paciente tem alergia severa a Penicilina e Dipirona. Nas consultas anteriores o foco foi controle pressórico, que aparenta estar estável (130/85). <br>
+            <strong>Sugestão para o Médico:</strong> Avaliar queixa atual levando em conta possível descontrole metabólico associado à dislipidemia.
+        `;
+    }
+</script>
+
+</body>
+</html>

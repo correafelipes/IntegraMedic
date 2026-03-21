@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prontuário do Paciente</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 20px; }
+        
+        /* Lateral Esquerda - Perfil */
+        .sidebar { width: 300px; border-right: 1px solid #eee; padding-right: 20px; }
+        .patient-label { font-size: 12px; color: #777; text-transform: uppercase; letter-spacing: 1px; }
+        .patient-name { font-size: 24px; font-weight: bold; margin: 10px 0; color: #2c3e50; }
+        .badge { display: inline-block; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; color: #fff; }
+        .badge-private { background-color: #e67e22; }
+        .badge-insurance { background-color: #3498db; }
+        
+        /* Área Principal - Prontuário / Bloco de Notas */
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .controls button, .controls input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; }
+        .controls button { background: #2ecc71; color: white; border: none; cursor: pointer; font-weight: bold; }
+        .controls button.print-btn { background: #34495e; }
+        
+        .timeline { flex: 1; overflow-y: auto; padding-right: 10px; }
+        .consultation-card { background: #fafafa; border: 1px solid #e0e0e0; padding: 15px; margin-bottom: 15px; border-radius: 6px; }
+        .consult-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px;}
+        .consult-notes { font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; }
+            .controls { display: none; }
+            .consultation-card { border: 1px solid #ccc; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Coluna Esquerda: Paciente -->
+    <div class="sidebar">
+        <div class="patient-label">Paciente</div>
+        <div class="patient-name">João da Silva</div>
+        <!-- Mude a classe para 'badge-insurance' e texto para 'Convênio (Unimed)' se for convênio -->
+        <div class="badge badge-private">Particular</div>
+        
+        <div style="margin-top: 30px; font-size: 14px; color: #666; line-height: 1.8;">
+            <p><strong>Nascimento:</strong> 15/04/1985 (40 anos)</p>
+            <p><strong>Telefone:</strong> (11) 99999-9999</p>
+            <p><strong>Última Visita:</strong> 21/03/2026</p>
+        </div>
+    </div>
+
+    <!-- Coluna Direita: Anotações / Histórico -->
+    <div class="main-content">
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Pesquisar anotações..." onkeyup="filterNotes()">
+            <div>
+                <button onclick="addNote()">+ Nova Anotação</button>
+                <button class="print-btn" onclick="window.print()">🖨️ Imprimir</button>
+            </div>
+        </div>
+
+        <div class="timeline" id="timeline">
+            <!-- Exemplo de Atendimento Automático -->
+            <div class="consultation-card note-item">
+                <div class="consult-header">
+                    <span>Consulta #1042</span>
+                    <span>21/03/2026 às 14:30</span>
+                </div>
+                <div class="consult-notes">Paciente compareceu com queixa de dores lombares contínuas há 2 semanas.
+Solicitado Raio-X da coluna e prescrito analgésico.
+Retorno marcado para daqui a 15 dias com os exames.</div>
+            </div>
+
+            <!-- Exemplo Antigo -->
+            <div class="consultation-card note-item">
+                <div class="consult-header">
+                    <span>Consulta #0890</span>
+                    <span>10/12/2025 às 09:15</span>
+                </div>
+                <div class="consult-notes">Check-up anual. Exames de sangue sem alterações.
+Pressão arterial: 120/80.
+Recomendada manutenção de dieta e exercícios.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Função simples para pesquisa em tempo real (Kira mode)
+    function filterNotes() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const notes = document.getElementsByClassName('note-item');
+        
+        for (let i = 0; i < notes.length; i++) {
+            let text = notes[i].innerText.toLowerCase();
+            if (text.includes(input)) {
+                notes[i].style.display = "";
+            } else {
+                notes[i].style.display = "none";
+            }
+        }
+    }
+
+    // Placeholder para nova anotação (será ligado ao backend do Bane depois)
+    function addNote() {
+        alert("Na versão final, isso abrirá um editor para salvar diretamente no banco de dados.");
+    }
+</script>
+
+</body>
+</html>

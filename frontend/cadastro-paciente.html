@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntegraMedic - Cadastro de Paciente</title>
+    <!-- Tailwind CSS para estilização rápida e moderna -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f3f4f6; }
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-900">
+
+    <div class="flex h-screen overflow-hidden bg-gray-100">
+        
+        <!-- Sidebar Menu -->
+        <aside class="w-64 bg-blue-900 text-white flex flex-col hidden md:flex">
+            <div class="h-16 flex items-center justify-center border-b border-blue-800">
+                <h1 class="text-2xl font-bold">IntegraMedic 🏥</h1>
+            </div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="#" class="block px-4 py-2 bg-blue-800 rounded-md font-medium">📋 Cadastro de Paciente</a>
+                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">📅 Agenda Geral</a>
+                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">🩺 Consultas & Horários</a>
+                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">⭐ Pontuação & Fidelidade</a>
+                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">🔬 Exames e Laudos</a>
+                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">🚪 Recepção/Fila</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto focus:outline-none">
+            
+            <!-- Header -->
+            <header class="bg-white shadow h-16 flex items-center justify-between px-6">
+                <h2 class="text-xl font-semibold text-gray-800">Novo Paciente</h2>
+                <div class="flex items-center">
+                    <span class="text-sm text-gray-500 mr-2">Recepção Ativa</span>
+                    <div class="h-8 w-8 rounded-full bg-green-500 border-2 border-white shadow-sm"></div>
+                </div>
+            </header>
+
+            <div class="p-6 max-w-5xl mx-auto">
+                <form class="bg-white shadow-md rounded-lg p-8">
+                    
+                    <!-- Tabs Falsas de Navegação no Formulário -->
+                    <div class="flex border-b mb-6">
+                        <button type="button" class="py-2 px-4 font-semibold tab-active">Dados Pessoais</button>
+                        <button type="button" class="py-2 px-4 text-gray-500 hover:text-blue-500">Histórico Médico</button>
+                        <button type="button" class="py-2 px-4 text-gray-500 hover:text-blue-500">Odontograma 🦷</button>
+                    </div>
+
+                    <!-- Sessão Dados Pessoais -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Nome Completo *</label>
+                            <input type="text" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Maria da Silva">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">CPF *</label>
+                            <input type="text" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="000.000.000-00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                            <input type="date" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Telefone / WhatsApp</label>
+                            <input type="tel" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="(11) 99999-9999">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Endereço</label>
+                            <input type="text" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Rua, Número, Bairro, Cidade">
+                        </div>
+                        
+                        <!-- Mini Preview Odontologia / Médico -->
+                        <div class="md:col-span-2 pt-4 border-t mt-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Informações Clínicas Iniciais</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tipo Sanguíneo</label>
+                                    <select class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                        <option>Desconhecido</option>
+                                        <option>A+</option><option>A-</option>
+                                        <option>B+</option><option>B-</option>
+                                        <option>O+</option><option>O-</option>
+                                        <option>AB+</option><option>AB-</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Alergias</label>
+                                    <input type="text" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Dipirona, Iodo">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Pontuação Inicial</label>
+                                    <input type="number" value="0" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end space-x-3">
+                        <button type="button" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Salvar Paciente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
