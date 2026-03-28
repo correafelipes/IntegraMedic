@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impressão Médica - IntegraMedic</title>
+    <style>
+        body { font-family: 'Times New Roman', Times, serif; background: #e5e7eb; margin: 0; padding: 20px; color: #000; display: flex; justify-content: center; }
+        
+        .paper { background: #fff; width: 210mm; min-height: 297mm; padding: 20mm; box-sizing: border-box; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); position: relative; }
+        
+        /* Cabeçalho */
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 30px; }
+        .clinic-name { font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
+        .clinic-info { font-size: 12px; color: #333; margin-top: 5px; }
+
+        /* Corpo / Conteúdo */
+        .content { font-size: 14px; line-height: 1.6; min-height: 150mm; }
+        .patient-info { margin-bottom: 30px; font-weight: bold; }
+        .prescription-title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px; text-decoration: underline; }
+        
+        .medication-item { margin-bottom: 20px; }
+        .med-name { font-weight: bold; font-size: 16px; }
+        .med-instructions { margin-left: 20px; font-style: italic; }
+
+        /* Rodapé / Assinatura */
+        .footer { position: absolute; bottom: 20mm; left: 20mm; right: 20mm; text-align: center; }
+        .signature-line { width: 60%; border-top: 1px solid #000; margin: 0 auto 10px auto; }
+        .doctor-name { font-weight: bold; font-size: 16px; margin: 0; }
+        .doctor-crm { font-size: 14px; margin: 0; }
+        
+        .system-branding { margin-top: 40px; font-size: 10px; color: #666; text-align: center; font-family: Arial, sans-serif; }
+
+        /* Controles na Tela (Não saem na impressão) */
+        .print-controls { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; }
+        .btn { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: Arial, sans-serif; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-back { background: #475569; }
+
+        /* Modo Impressão */
+        @media print {
+            body { background: white; padding: 0; display: block; }
+            .paper { box-shadow: none; width: 100%; min-height: auto; padding: 0; }
+            .print-controls { display: none; }
+            @page { margin: 15mm; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="print-controls">
+        <button class="btn btn-back" onclick="window.close()">⬅️ Voltar</button>
+        <button class="btn" onclick="window.print()">🖨️ Imprimir Agora</button>
+    </div>
+
+    <div class="paper">
+        <!-- Cabeçalho da Clínica -->
+        <div class="header">
+            <h1 class="clinic-name">Clínica Vida & Saúde</h1>
+            <div class="clinic-info">Rua das Flores, 123 - Centro | Telefone: (11) 9999-0000 | CNPJ: 00.000.000/0001-00</div>
+        </div>
+
+        <!-- Conteúdo Médico -->
+        <div class="content">
+            <div class="patient-info">
+                Paciente: Maria de Souza<br>
+                Data: <span id="currentDate"></span>
+            </div>
+
+            <div class="prescription-title">RECEITUÁRIO MÉDICO</div>
+
+            <div class="medication-item">
+                <div class="med-name">1. Amoxicilina 500mg --------------------------------- 1 caixa</div>
+                <div class="med-instructions">Tomar 1 (um) comprimido de 8 em 8 horas, durante 7 dias.</div>
+            </div>
+
+            <div class="medication-item">
+                <div class="med-name">2. Dipirona 500mg ------------------------------------ 1 frasco</div>
+                <div class="med-instructions">Tomar 35 gotas de 6 em 6 horas, em caso de dor ou febre.</div>
+            </div>
+            
+            <br><br><br>
+            <p style="text-align: center; font-style: italic;">Uso oral. Retornar caso os sintomas persistam.</p>
+        </div>
+
+        <!-- Assinatura e Rodapé do Sistema -->
+        <div class="footer">
+            <div class="signature-line"></div>
+            <p class="doctor-name">Dra. Aline Costa Corrêa</p>
+            <p class="doctor-crm">CRM-SP: 123456</p>
+            
+            <div class="system-branding">
+                Documento emitido digitalmente pelo software <strong>IntegralMedic fscorrea ltda</strong>.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Formatar data atual automaticamente
+        const now = new Date();
+        document.getElementById('currentDate').innerText = now.toLocaleDateString('pt-BR');
+        
+        // Disparar a caixa de impressão assim que carregar (opcional)
+        // window.onload = () => { setTimeout(() => window.print(), 500); };
+    </script>
+</body>
+</html>

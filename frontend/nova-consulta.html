@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prontuário Eletrônico - Completo</title>
+    <title>IntegraMedic - Nova Consulta</title>
     <style>
         :root { --primary: #2c3e50; --secondary: #3498db; --success: #2ecc71; --bg: #f8f9fa; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
@@ -173,94 +173,53 @@
 
     <!-- Área de Conteúdo -->
     <div class="main-content">
-        <div class="tabs">
+        
+        <div class="p-6">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+<!-- TAB: Nova Consulta (Anamnese Atual) -->
+        <div id="tab-nova-consulta" class="block">
+            <h2 class="section-title">Atendimento Atual - 21/03/2026</h2>
             
-            <div class="tab active" onclick="switchTab('historico')" id="tab-btn-historico">Histórico do Paciente</div>
-            <div class="tab" onclick="switchTab('receitas')" id="tab-btn-receitas">Prescrições</div>
-        </div>
-
-        <!-- TAB: Histórico do Paciente (IA, Exames e Anotações Passadas) -->
-        <div id="tab-historico" class="tab-content active">
+            <div class="form-group">
+                <label>Queixa Principal (QP)</label>
+                <input type="text" placeholder="Ex: Dor de cabeça intensa há 3 dias...">
+            </div>
             
-            <!-- Painel da IA para Relatório do Médico -->
-            <div class="ai-panel">
-                <div class="ai-header">
-                    <span>🤖 Assistente Diagnóstico (Nero AI) - Visão Geral do Paciente</span>
-                    <button class="ai-btn" onclick="gerarRelatorio()">Gerar Relatório para o Médico</button>
+            <div class="form-group">
+                <label>História da Moléstia Atual (HMA)</label>
+                <textarea rows="4" placeholder="Descreva os sintomas atuais, evolução..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Exame Físico / Observações</label>
+                <textarea rows="3" placeholder="Dados do exame clínico..."></textarea>
+            </div>
+            
+            
+            <!-- Integração IA Felipe: Gravação de Atendimento -->
+            <div class="form-group bg-blue-50 border border-blue-200 p-4 rounded-lg flex items-center justify-between mt-6 mb-4 shadow-sm">
+                <div>
+                    <strong class="text-sm text-blue-800 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
+                        Transcrever Consulta via IA
+                    </strong>
+                    <p class="text-xs text-blue-600 mt-1">Grave a consulta. A IA preencherá a evolução automaticamente e anexará o áudio original.</p>
                 </div>
-                <div class="ai-content" id="ai-report-area">
-                    <em>A IA consolidará o histórico de consultas, medicações, sinais vitais (peso/IMC) e todos os exames em anexo para apresentar um panorama clínico rápido para o médico.</em>
-                </div>
+                <button type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-5 rounded-full shadow-md flex items-center gap-2 transition-all" onclick="alert('Iniciando gravação... (Aguardando conexão com a API de IA do Felipe)')">
+                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> Gravar Atendimento
+                </button>
             </div>
 
-            <!-- Central de Exames -->
-            <h2 class="section-title">Exames Anexados</h2>
-            <div class="file-upload" onclick="alert('Abre a janela de upload do Windows.')">
-                📁 <strong>Clique para anexar exames</strong> (PDF, Imagens, DICOM)<br>
-                <span style="font-size: 12px;">A IA irá extrair e indexar os resultados automaticamente.</span>
-            </div>
-
-            <div class="card">
-                <div style="display: flex; justify-content: space-between;">
-                    <strong>Hemograma Completo + Lipidograma</strong>
-                    <span style="color: #666; font-size: 12px;">Data: 10/02/2026</span>
-                </div>
-                <div style="margin-top: 10px; font-size: 13px; color: #444;">
-                    <span style="color: #b91c1c;">⚠️ Colesterol Total: 240 mg/dL (Alto)</span><br>
-                    Glicemia de jejum: 98 mg/dL (Normal)<br>
-                    <a href="#" style="color: var(--secondary); text-decoration: none; display: inline-block; margin-top: 5px;">📄 Abrir Laudo (PDF)</a>
-                </div>
-            </div>
-
-            <!-- Linha do Tempo de Consultas Anteriores -->
-            <h2 class="section-title" style="margin-top: 30px;">Histórico de Consultas</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date" style="display:flex; justify-content:space-between; align-items:center;">
-        <span>10/02/2026 - Consulta de Rotina (#0890)</span>
-        <button class="text-blue-500 hover:text-blue-700 focus:outline-none" title="Ouvir Áudio Bruto do Atendimento" onclick="alert('Reproduzindo áudio original do atendimento gravado pela IA do Felipe.')">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
-        </button>
-    </div>
-                    <div class="timeline-content">
-                        <strong>Médico:</strong> Dr. Silva<br>
-                        <strong>Evolução:</strong> Paciente compareceu para check-up. Queixa de fadiga leve. Solicitado exames de sangue gerais e mantida a medicação atual para hipertensão.
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date" style="display:flex; justify-content:space-between; align-items:center;">
-        <span>15/08/2025 - Retorno (#0420)</span>
-        <button class="text-blue-500 hover:text-blue-700 focus:outline-none" title="Ouvir Áudio Bruto do Atendimento" onclick="alert('Reproduzindo áudio original do atendimento gravado pela IA do Felipe.')">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path></svg>
-        </button>
-    </div>
-                    <div class="timeline-content">
-                        <strong>Médico:</strong> Dr. Silva<br>
-                        <strong>Evolução:</strong> Pressão arterial estabilizada. Relata boa adaptação à Losartana. Orientada a manter perda de peso.
-                    </div>
-                </div>
-            </div>
-
+            <button class="btn-primary">Salvar Evolução</button>
         </div>
 
-        <!-- TAB: Prescrições -->
-        <div id="tab-receitas" class="tab-content">
-            <h2 class="section-title">Gerar Prescrição Médica</h2>
-            <div class="form-group">
-                <label>Medicamento</label>
-                <input type="text" placeholder="Digite o nome do medicamento (Busca automática)...">
+        
             </div>
-            <div class="form-group">
-                <label>Posologia / Instruções</label>
-                <textarea rows="2" placeholder="Ex: Tomar 1 comprimido de 8 em 8 horas por 5 dias."></textarea>
-            </div>
-            <button type="button" class="btn-primary" style="background: #34495e;" onclick="window.open('imprimir.html', '_blank')">🖨️ Imprimir Receita</button>
         </div>
-
     </div>
 </div>
-
 <script>
+
     function switchTab(tabName) {
         // Esconder todos os conteúdos
         const contents = document.getElementsByClassName('tab-content');

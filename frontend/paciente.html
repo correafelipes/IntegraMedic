@@ -6,7 +6,9 @@
     <title>Prontuário do Paciente</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; gap: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 20px; }
+        @media (min-width: 768px) { .container { flex-direction: row; } }
+
         
         /* Lateral Esquerda - Perfil */
         .sidebar { width: 300px; border-right: 1px solid #eee; padding-right: 20px; }
@@ -34,9 +36,72 @@
             .controls { display: none; }
             .consultation-card { border: 1px solid #ccc; page-break-inside: avoid; }
         }
+    
+        
+        /* DARK MODE CSS (Custom para as páginas) */
+        html.dark body { background: #111827; color: #e5e7eb; }
+        html.dark .container, html.dark .sidebar, html.dark .main-content, html.dark .tabs, html.dark .tab-content { background: #1f2937; border-color: #374151; }
+        html.dark .card, html.dark .ai-panel, html.dark .vital-box, html.dark .timeline-content { background: #374151; border-color: #4b5563; color: #e5e7eb; }
+        html.dark .patient-name, html.dark .section-title, html.dark .vital-value, html.dark strong { color: #f9fafb; }
+        html.dark .form-group label { color: #d1d5db; }
+        html.dark input, html.dark textarea, html.dark select { background: #111827 !important; color: #f9fafb !important; border-color: #4b5563 !important; }
+        html.dark .file-upload { background: #374151; border-color: #4b5563; color: #9ca3af; }
+        html.dark .bg-blue-50 { background-color: #1e3a8a !important; border-color: #1e3a8a !important; }
+        html.dark .text-blue-800 { color: #bfdbfe !important; }
+        html.dark .text-blue-600 { color: #93c5fd !important; }
+        html.dark .bg-gray-50, html.dark .bg-white { background-color: #1f2937 !important; color: #e5e7eb !important; }
+        html.dark .text-gray-900, html.dark .text-gray-800, html.dark .text-gray-700, html.dark .text-gray-500 { color: #d1d5db !important; }
+        html.dark .border-b, html.dark .border-t, html.dark .border { border-color: #374151 !important; }
+        html.dark header { background-color: #1f2937 !important; border-color: #374151; }
+        html.dark .shadow-md, html.dark .shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); }
+        html.dark .tooth { background: #374151; border-color: #4b5563; }
+        html.dark .tooth-img { background-color: #4b5563; border-color: #6b7280; }
+        html.dark .status-normal .tooth-img { background-color: #1f2937; border-color: #4b5563; }
+        html.dark .nav-mobile { background-color: #1f2937 !important; border-color: #374151 !important; }
+        html.dark .text-blue-500 { color: #60a5fa !important; }
+        html.dark .bg-blue-600 { background-color: #2563eb !important; }
+        html.dark .tab-active { border-color: #60a5fa !important; color: #60a5fa !important; }
+        html.dark .bg-red-50 { background-color: #7f1d1d !important; border-color: #991b1b !important; }
+        html.dark .text-red-600 { color: #fca5a5 !important; }
+
     </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    
+
+    <script>
+        tailwind.config = { darkMode: 'class' };
+    </script>
+
 </head>
-<body>
+<body class="bg-gray-50 flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-blue-900 text-white flex-col hidden md:flex shrink-0 h-screen fixed left-0 top-0 z-50">
+        <div class="h-16 flex items-center justify-center border-b border-blue-800">
+            <h1 class="text-2xl font-bold">IntegraMedic 🏥</h1>
+        </div>
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            
+            <a href="cadastro-paciente.html" class="block px-4 py-2 hover:bg-blue-800 rounded-md">👤 Cadastro de Paciente</a>
+            <a href="nova-consulta.html" class="block px-4 py-2 hover:bg-blue-800 rounded-md" id="nav-consulta">🩺 Nova Consulta</a>
+            <a href="paciente.html" class="block px-4 py-2 hover:bg-blue-800 rounded-md" id="nav-paciente">📋 Resumo do Paciente</a>
+            <a href="prontuario_completo.html" class="block px-4 py-2 hover:bg-blue-800 rounded-md" id="nav-prontuario">⚕️ Prontuário & IA</a>
+            <a href="cadastro-usuarios.html" class="block px-4 py-2 hover:bg-blue-800 rounded-md mt-6 border-t border-blue-700 pt-4">⚙️ Controle de Usuários</a>
+        </nav>
+        
+        <div class="p-4 border-t border-blue-800 text-sm">
+            <button onclick="logout()" class="text-gray-300 hover:text-white w-full text-left flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Sair do Sistema
+            </button>
+        </div>
+    </aside>
+
+<div class="flex-1 md:ml-64 p-4 md:p-6 pb-24 md:pb-6 overflow-y-auto h-screen w-full">
+
+
+
 
 <div class="container">
     <!-- Coluna Esquerda: Paciente -->
@@ -110,6 +175,85 @@ Recomendada manutenção de dieta e exercícios.</div>
         alert("Na versão final, isso abrirá um editor para salvar diretamente no banco de dados.");
     }
 </script>
+
+</div>
+
+    <script>
+        // Verificacao de Login e Preenchimento de Dados
+        const userRole = localStorage.getItem('integraMedic_userRole');
+        const userName = localStorage.getItem('integraMedic_userName');
+
+        if (!userRole || !userName) {
+            window.location.href = 'index.html';
+        } else {
+            document.querySelectorAll('.logged-user-name').forEach(el => el.innerText = userRole + ': ' + userName);
+            document.querySelectorAll('.user-initials').forEach(el => el.innerText = userName.charAt(0).toUpperCase());
+            
+            // Lógica Restritiva de Cadastro (apenas para cadastro-usuarios.html)
+            if (window.location.pathname.includes('cadastro-usuarios')) {
+                if (userRole !== 'DONO' && userRole !== 'MEDICO_ADMIN') {
+                    const optTotal = document.getElementById('optTotal');
+                    if(optTotal) {
+                        optTotal.disabled = true;
+                        optTotal.classList.add('hidden');
+                        let warning = document.getElementById('roleWarning');
+                        if(warning) warning.classList.remove('hidden');
+                    }
+                }
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('integraMedic_userRole');
+            localStorage.removeItem('integraMedic_userName');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <!-- Mobile Bottom Navigation (App-like) -->
+    <nav class="md:hidden fixed bottom-0 w-full bg-white border-t border-gray-200 nav-mobile flex justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50">
+        <a href="cadastro-paciente.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-blue-600">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+            <span class="text-[10px] font-medium">Novo</span>
+        </a>
+        <a href="paciente.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-blue-600">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
+            <span class="text-[10px] font-medium">Resumo</span>
+        </a>
+        <a href="nova-consulta.html" class="flex flex-col items-center justify-center w-full h-full text-blue-600 border-t-2 border-blue-600 bg-blue-50">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            <span class="text-[10px] font-bold">Consulta</span>
+        </a>
+        <a href="#" onclick="logout()" class="flex flex-col items-center justify-center w-full h-full text-red-500 hover:text-red-700">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            <span class="text-[10px] font-medium">Sair</span>
+        </a>
+    </nav>
+
+
+    
+
+    <script>
+        // Força o modo claro por padrão se não houver preferência salva
+        if (localStorage.theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            updateThemeButton('Modo Claro ☀️');
+        } else {
+            document.documentElement.classList.remove('dark');
+            updateThemeButton('Modo Escuro 🌙');
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            updateThemeButton(isDark ? 'Modo Claro ☀️' : 'Modo Escuro 🌙');
+        }
+
+        function updateThemeButton(text) {
+            const btns = document.querySelectorAll('.theme-toggle-text');
+            btns.forEach(btn => btn.innerText = text);
+        }
+    </script>
 
 </body>
 </html>

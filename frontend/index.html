@@ -4,59 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IntegraMedic - Login</title>
+    <!-- Tailwind sem NENHUMA config de dark mode (desativa qualquer detecção automática do Windows/Mac) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: false, // Força a desativação completa do modo escuro neste arquivo
+        }
+    </script>
 </head>
-<body class="bg-gray-100 h-screen flex items-center justify-center">
+<body class="bg-gray-100 h-screen flex items-center justify-center" style="background-color: #f3f4f6; color: #111827;">
 
-    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border-t-4 border-blue-600">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border-t-4 border-blue-600" style="background-color: #ffffff;">
         
         <!-- Logo IntegraMedic -->
         <div class="flex flex-col items-center justify-center mb-8">
             <div class="bg-blue-600 p-3 rounded-full mb-3 shadow-lg">
-                <!-- Ícone SVG combinando cruz médica e design moderno -->
                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v4m-2-2h4"></path>
                 </svg>
             </div>
-            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Integra<span class="text-blue-600">Medic</span></h1>
-            <p class="text-sm text-gray-500 mt-1">Gestão de Clínicas e Consultórios</p>
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight" style="color: #111827;">Integra<span class="text-blue-600">Medic</span></h1>
+            <p class="text-sm text-gray-500 mt-1" style="color: #6b7280;">Gestão de Clínicas e Consultórios</p>
         </div>
 
         <!-- Formulário de Login -->
         <form id="loginForm" class="space-y-6">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Usuário</label>
+                <label class="block text-sm font-medium text-gray-700" style="color: #374151;">Usuário</label>
                 <div class="mt-1">
-                    <input id="username" type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="Digite seu usuário">
+                    <input id="username" type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="Digite seu usuário" style="background-color: #ffffff; color: #111827; border-color: #d1d5db;">
                 </div>
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700">Senha</label>
+                <label class="block text-sm font-medium text-gray-700" style="color: #374151;">Senha</label>
                 <div class="mt-1">
-                    <input id="password" type="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="••••••••">
+                    <input id="password" type="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="••••••••" style="background-color: #ffffff; color: #111827; border-color: #d1d5db;">
                 </div>
             </div>
 
-            <!-- Mensagem de Erro (Oculta por padrão) -->
+            <!-- Mensagem de Erro -->
             <div id="errorMessage" class="hidden bg-red-50 text-red-600 text-sm p-3 rounded-md border border-red-200 text-center">
                 Usuário ou senha incorretos!
             </div>
 
             <div>
-                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Acessar Sistema
                 </button>
             </div>
+            
+            <div class="mt-4 text-center">
+                <a href="#" onclick="alert('Um link de recuperação seria enviado para o seu e-mail.')" class="text-sm font-medium text-blue-600 hover:text-blue-500">Esqueci a senha / Recuperar por e-mail</a>
+            </div>
         </form>
         
-        <div class="mt-6 text-center text-xs text-gray-400">
+        <div class="mt-6 text-center text-xs text-gray-400" style="color: #9ca3af;">
             &copy; 2026 IntegraMedic Software SaaS.
         </div>
     </div>
 
     <script>
+        // Limpar qualquer sujeira do localStorage
+        localStorage.removeItem('theme');
+        document.documentElement.classList.remove('dark');
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -64,16 +77,26 @@
             const pass = document.getElementById('password').value;
             const errorDiv = document.getElementById('errorMessage');
 
-            // Credenciais hardcoded solicitadas
+            let loggedIn = false;
+            let role = 'DONO';
+            let name = '';
+
             if (user === 'correfs' && pass === 'FelipeC19') {
-                // Simula autenticação bem-sucedida de um usuário DONO/ADMIN
-                localStorage.setItem('integraMedic_userRole', 'DONO');
-                localStorage.setItem('integraMedic_userName', 'Felipe Correa');
-                
-                // Redireciona para o painel (tela de cadastro de usuários por enquanto)
-                window.location.href = 'cadastro-usuarios.html';
+                loggedIn = true;
+                name = 'Felipe Correa';
+            } else if (user === 'correafabio' && pass === 'FelipeC19') {
+                loggedIn = true;
+                name = 'Fábio Correa';
+            } else if (user === 'soaresjb' && pass === 'Gato10') {
+                loggedIn = true;
+                name = 'J. B. Soares';
+            }
+
+            if (loggedIn) {
+                localStorage.setItem('integraMedic_userRole', role);
+                localStorage.setItem('integraMedic_userName', name);
+                window.location.href = 'cadastro-paciente.html';
             } else {
-                // Falha no login
                 errorDiv.classList.remove('hidden');
             }
         });

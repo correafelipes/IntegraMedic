@@ -4,56 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IntegraMedic - Cadastro de Paciente</title>
-    <!-- Tailwind CSS para estilização rápida e moderna -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f3f4f6; }
-        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
+        .tab-btn { cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+        .tab-btn:hover { color: #3b82f6; }
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; font-weight: 600; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Estilos do Odontograma */
+        .tooth-grid { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; margin-bottom: 20px; }
+        .tooth { text-align: center; border: 1px solid #cbd5e1; padding: 5px; border-radius: 4px; background: white; cursor: pointer; user-select: none; }
+        .tooth-number { font-size: 10px; font-weight: bold; color: #64748b; margin-bottom: 5px; }
+        .tooth-img { width: 24px; height: 24px; margin: 0 auto; background-color: #e2e8f0; border-radius: 50%; border: 2px solid #94a3b8; }
+        
+        /* Status dos dentes */
+        .status-normal .tooth-img { background-color: white; border-color: #cbd5e1; }
+        .status-carie .tooth-img { background-color: #ef4444; border-color: #b91c1c; } /* Vermelho */
+        .status-restaurado .tooth-img { background-color: #3b82f6; border-color: #1d4ed8; } /* Azul */
+        .status-extraido .tooth-img { background-color: #1e293b; border-color: #0f172a; position: relative; } /* Preto/Ausente */
+        .status-extraido .tooth-img::after { content: 'X'; color: white; font-size: 14px; position: absolute; top: 0; left: 6px; font-weight: bold; }
+        
+        .legend-box { display: flex; gap: 15px; margin-top: 20px; font-size: 12px; }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #ccc; }
+    
+        
+        /* DARK MODE CSS (Custom para as páginas) */
+        html.dark body { background: #111827; color: #e5e7eb; }
+        html.dark .container, html.dark .sidebar, html.dark .main-content, html.dark .tabs, html.dark .tab-content { background: #1f2937; border-color: #374151; }
+        html.dark .card, html.dark .ai-panel, html.dark .vital-box, html.dark .timeline-content { background: #374151; border-color: #4b5563; color: #e5e7eb; }
+        html.dark .patient-name, html.dark .section-title, html.dark .vital-value, html.dark strong { color: #f9fafb; }
+        html.dark .form-group label { color: #d1d5db; }
+        html.dark input, html.dark textarea, html.dark select { background: #111827 !important; color: #f9fafb !important; border-color: #4b5563 !important; }
+        html.dark .file-upload { background: #374151; border-color: #4b5563; color: #9ca3af; }
+        html.dark .bg-blue-50 { background-color: #1e3a8a !important; border-color: #1e3a8a !important; }
+        html.dark .text-blue-800 { color: #bfdbfe !important; }
+        html.dark .text-blue-600 { color: #93c5fd !important; }
+        html.dark .bg-gray-50, html.dark .bg-white { background-color: #1f2937 !important; color: #e5e7eb !important; }
+        html.dark .text-gray-900, html.dark .text-gray-800, html.dark .text-gray-700, html.dark .text-gray-500 { color: #d1d5db !important; }
+        html.dark .border-b, html.dark .border-t, html.dark .border { border-color: #374151 !important; }
+        html.dark header { background-color: #1f2937 !important; border-color: #374151; }
+        html.dark .shadow-md, html.dark .shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); }
+        html.dark .tooth { background: #374151; border-color: #4b5563; }
+        html.dark .tooth-img { background-color: #4b5563; border-color: #6b7280; }
+        html.dark .status-normal .tooth-img { background-color: #1f2937; border-color: #4b5563; }
+        html.dark .nav-mobile { background-color: #1f2937 !important; border-color: #374151 !important; }
+        html.dark .text-blue-500 { color: #60a5fa !important; }
+        html.dark .bg-blue-600 { background-color: #2563eb !important; }
+        html.dark .tab-active { border-color: #60a5fa !important; color: #60a5fa !important; }
+        html.dark .bg-red-50 { background-color: #7f1d1d !important; border-color: #991b1b !important; }
+        html.dark .text-red-600 { color: #fca5a5 !important; }
+
     </style>
+
+    
+
+    <script>
+        tailwind.config = { darkMode: 'class' };
+    </script>
+
 </head>
 <body class="font-sans antialiased text-gray-900">
 
     <div class="flex h-screen overflow-hidden bg-gray-100">
         
-        <!-- Sidebar Menu -->
-        <aside class="w-64 bg-blue-900 text-white flex flex-col hidden md:flex">
+        <!-- Sidebar Menu Oficial -->
+        <aside class="w-64 bg-blue-900 text-white flex flex-col hidden md:flex shrink-0">
             <div class="h-16 flex items-center justify-center border-b border-blue-800">
                 <h1 class="text-2xl font-bold">IntegraMedic 🏥</h1>
             </div>
-            <nav class="flex-1 px-4 py-6 space-y-2">
-                <a href="#" class="block px-4 py-2 bg-blue-800 rounded-md font-medium">📋 Cadastro de Paciente</a>
-                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">📅 Agenda Geral</a>
-                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">🩺 Consultas & Horários</a>
-                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">⭐ Pontuação & Fidelidade</a>
-                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">🔬 Exames e Laudos</a>
-                <a href="#" class="block px-4 py-2 hover:bg-blue-800 rounded-md">🚪 Recepção/Fila</a>
+            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                
+                <a href="cadastro-paciente.html" class="block px-4 py-2 bg-blue-800 rounded-md font-medium">👤 Cadastro de Paciente</a>
+            <a href="nova-consulta.html" class="block px-4 py-2 hover:bg-blue-800 rounded-md" id="nav-consulta">🩺 Nova Consulta</a>
+                <a href="paciente.html" class="block px-4 py-2 hover:bg-blue-800 rounded-md">📋 Resumo do Paciente</a>
+                <a href="prontuario_completo.html" class="block px-4 py-2 hover:bg-blue-800 rounded-md">⚕️ Prontuário & IA</a>
+                <a href="cadastro-usuarios.html" class="block px-4 py-2 hover:bg-blue-800 rounded-md mt-6 border-t border-blue-700 pt-4">⚙️ Controle de Usuários</a>
             </nav>
+            
+        <div class="p-4 border-t border-blue-800 text-sm">
+            <button onclick="logout()" class="text-gray-300 hover:text-white w-full text-left flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Sair do Sistema
+            </button>
+        </div>
         </aside>
 
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto focus:outline-none">
             
-            <!-- Header -->
             <header class="bg-white shadow h-16 flex items-center justify-between px-6">
-                <h2 class="text-xl font-semibold text-gray-800">Novo Paciente</h2>
+                <h2 class="text-xl font-semibold text-gray-800">Ficha do Paciente</h2>
+                
                 <div class="flex items-center">
-                    <span class="text-sm text-gray-500 mr-2">Recepção Ativa</span>
-                    <div class="h-8 w-8 rounded-full bg-green-500 border-2 border-white shadow-sm"></div>
+                    <span class="logged-user-name text-sm font-bold text-gray-700 mr-2">Carregando...</span>
+                    <div class="user-initials h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">...</div>
                 </div>
             </header>
 
             <div class="p-6 max-w-5xl mx-auto">
                 <form class="bg-white shadow-md rounded-lg p-8">
                     
-                    <!-- Tabs Falsas de Navegação no Formulário -->
+                    <!-- Tabs de Navegação no Formulário -->
                     <div class="flex border-b mb-6">
-                        <button type="button" class="py-2 px-4 font-semibold tab-active">Dados Pessoais</button>
-                        <button type="button" class="py-2 px-4 text-gray-500 hover:text-blue-500">Histórico Médico</button>
-                        <button type="button" class="py-2 px-4 text-gray-500 hover:text-blue-500">Odontograma 🦷</button>
+                        <button type="button" onclick="openTab('dados')" id="btn-dados" class="py-2 px-4 font-semibold tab-btn tab-active">Dados Pessoais</button>
+                        <button type="button" onclick="openTab('historico')" id="btn-historico" class="py-2 px-4 text-gray-500 tab-btn">Histórico Médico</button>
+                        <button type="button" onclick="openTab('odonto')" id="btn-odonto" class="py-2 px-4 text-gray-500 tab-btn">Odontograma 🦷</button>
                     </div>
 
                     <!-- Sessão Dados Pessoais -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="tab-dados" class="tab-content active grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Nome Completo *</label>
                             <input type="text" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Maria da Silva">
@@ -71,33 +133,67 @@
                             <input type="tel" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="(11) 99999-9999">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Endereço</label>
+                            <label class="block text-sm font-medium text-gray-700">Endereço Completo</label>
                             <input type="text" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Rua, Número, Bairro, Cidade">
                         </div>
+                    </div>
+
+                    <!-- Sessão Histórico Médico -->
+                    <div id="tab-historico" class="tab-content">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Antecedentes Clínicos Pessoais</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Tipo Sanguíneo</label>
+                                <select class="mt-1 p-2 w-full border rounded-md shadow-sm">
+                                    <option>A+</option><option>A-</option><option>O+</option><option>O-</option>
+                                    <option>B+</option><option>AB+</option><option>Desconhecido</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 text-red-600 font-bold">Alergias Conhecidas ⚠️</label>
+                                <input type="text" class="mt-1 p-2 w-full border border-red-300 rounded-md shadow-sm bg-red-50" placeholder="Ex: Dipirona, Iodo, Penicilina">
+                            </div>
+                        </div>
                         
-                        <!-- Mini Preview Odontologia / Médico -->
-                        <div class="md:col-span-2 pt-4 border-t mt-4">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">Informações Clínicas Iniciais</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Tipo Sanguíneo</label>
-                                    <select class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                                        <option>Desconhecido</option>
-                                        <option>A+</option><option>A-</option>
-                                        <option>B+</option><option>B-</option>
-                                        <option>O+</option><option>O-</option>
-                                        <option>AB+</option><option>AB-</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Alergias</label>
-                                    <input type="text" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Dipirona, Iodo">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Pontuação Inicial</label>
-                                    <input type="number" value="0" class="mt-1 p-2 w-full border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" disabled>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Doenças Crônicas</label>
+                                <div class="mt-2 space-y-2">
+                                    <label class="inline-flex items-center"><input type="checkbox" class="form-checkbox text-blue-600"><span class="ml-2 text-sm">Hipertensão</span></label><br>
+                                    <label class="inline-flex items-center"><input type="checkbox" class="form-checkbox text-blue-600"><span class="ml-2 text-sm">Diabetes</span></label><br>
+                                    <label class="inline-flex items-center"><input type="checkbox" class="form-checkbox text-blue-600"><span class="ml-2 text-sm">Asma</span></label>
                                 </div>
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Cirurgias Anteriores</label>
+                                <textarea class="mt-1 p-2 w-full border rounded-md shadow-sm h-24" placeholder="Liste os procedimentos..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sessão Odontograma -->
+                    <div id="tab-odonto" class="tab-content">
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Odontograma Adulto (FDI)</h3>
+                        <p class="text-sm text-gray-500 mb-6">Clique em um dente para alterar o status.</p>
+                        
+                        <!-- Arcada Superior -->
+                        <div class="tooth-grid" id="arcada-superior">
+                        </div>
+                        
+                        <!-- Arcada Inferior -->
+                        <div class="tooth-grid" id="arcada-inferior">
+                        </div>
+
+                        <div class="legend-box">
+                            <div class="legend-item"><div class="dot" style="background: white;"></div> Normal (Íntegro)</div>
+                            <div class="legend-item"><div class="dot" style="background: #ef4444; border-color: #b91c1c;"></div> Cárie</div>
+                            <div class="legend-item"><div class="dot" style="background: #3b82f6; border-color: #1d4ed8;"></div> Restaurado</div>
+                            <div class="legend-item"><div class="dot" style="background: #1e293b;"></div> Ausente / Extraído</div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <label class="block text-sm font-medium text-gray-700">Observações Odontológicas</label>
+                            <textarea class="mt-1 p-2 w-full border rounded-md shadow-sm h-20" placeholder="Ex: Necessita canal no 26, tartarectomia inferior..."></textarea>
                         </div>
                     </div>
 
@@ -106,13 +202,137 @@
                             Cancelar
                         </button>
                         <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Salvar Paciente
+                            Salvar Ficha Completa
                         </button>
                     </div>
                 </form>
             </div>
         </main>
     </div>
+
+    <script>
+        // Lógica das Abas
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('tab-active');
+                el.classList.add('text-gray-500');
+            });
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            let btn = document.getElementById('btn-' + tabId);
+            btn.classList.add('tab-active');
+            btn.classList.remove('text-gray-500');
+        }
+
+        // Lógica do Odontograma (Gerador de Dentes e Cliques)
+        const superior = [18,17,16,15,14,13,12,11, 21,22,23,24,25,26,27,28];
+        const inferior = [48,47,46,45,44,43,42,41, 31,32,33,34,35,36,37,38];
+        const states = ['status-normal', 'status-carie', 'status-restaurado', 'status-extraido'];
+
+        function renderArcada(containerId, dentes) {
+            const container = document.getElementById(containerId);
+            dentes.forEach(num => {
+                let div = document.createElement('div');
+                div.className = 'tooth status-normal';
+                div.dataset.stateIndex = 0;
+                
+                div.innerHTML = '<div class="tooth-number">' + num + '</div><div class="tooth-img"></div>';
+                
+                // Mudar cor ao clicar
+                div.onclick = function() {
+                    let idx = parseInt(this.dataset.stateIndex);
+                    this.classList.remove(states[idx]);
+                    
+                    idx = (idx + 1) % states.length;
+                    this.dataset.stateIndex = idx;
+                    this.classList.add(states[idx]);
+                };
+                
+                container.appendChild(div);
+            });
+        }
+
+        renderArcada('arcada-superior', superior);
+        renderArcada('arcada-inferior', inferior);
+    </script>
+
+    <script>
+        // Verificacao de Login e Preenchimento de Dados
+        const userRole = localStorage.getItem('integraMedic_userRole');
+        const userName = localStorage.getItem('integraMedic_userName');
+
+        if (!userRole || !userName) {
+            window.location.href = 'index.html';
+        } else {
+            document.querySelectorAll('.logged-user-name').forEach(el => el.innerText = userRole + ': ' + userName);
+            document.querySelectorAll('.user-initials').forEach(el => el.innerText = userName.charAt(0).toUpperCase());
+            
+            // Lógica Restritiva de Cadastro (apenas para cadastro-usuarios.html)
+            if (window.location.pathname.includes('cadastro-usuarios')) {
+                if (userRole !== 'DONO' && userRole !== 'MEDICO_ADMIN') {
+                    const optTotal = document.getElementById('optTotal');
+                    if(optTotal) {
+                        optTotal.disabled = true;
+                        optTotal.classList.add('hidden');
+                        let warning = document.getElementById('roleWarning');
+                        if(warning) warning.classList.remove('hidden');
+                    }
+                }
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('integraMedic_userRole');
+            localStorage.removeItem('integraMedic_userName');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <!-- Mobile Bottom Navigation (App-like) -->
+    <nav class="md:hidden fixed bottom-0 w-full bg-white border-t border-gray-200 nav-mobile flex justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50">
+        <a href="cadastro-paciente.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-blue-600">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+            <span class="text-[10px] font-medium">Novo</span>
+        </a>
+        <a href="paciente.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-blue-600">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
+            <span class="text-[10px] font-medium">Resumo</span>
+        </a>
+        <a href="nova-consulta.html" class="flex flex-col items-center justify-center w-full h-full text-blue-600 border-t-2 border-blue-600 bg-blue-50">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            <span class="text-[10px] font-bold">Consulta</span>
+        </a>
+        <a href="#" onclick="logout()" class="flex flex-col items-center justify-center w-full h-full text-red-500 hover:text-red-700">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            <span class="text-[10px] font-medium">Sair</span>
+        </a>
+    </nav>
+
+
+    
+
+    <script>
+        // Força o modo claro por padrão se não houver preferência salva
+        if (localStorage.theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            updateThemeButton('Modo Claro ☀️');
+        } else {
+            document.documentElement.classList.remove('dark');
+            updateThemeButton('Modo Escuro 🌙');
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            updateThemeButton(isDark ? 'Modo Claro ☀️' : 'Modo Escuro 🌙');
+        }
+
+        function updateThemeButton(text) {
+            const btns = document.querySelectorAll('.theme-toggle-text');
+            btns.forEach(btn => btn.innerText = text);
+        }
+    </script>
 
 </body>
 </html>
