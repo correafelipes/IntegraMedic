@@ -1,0 +1,21 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/", "destination": "/frontend/index.html" },
+    { "source": "/index.html", "destination": "/frontend/index.html" },
+    { "source": "/cadastro-paciente", "destination": "/frontend/cadastro-paciente.html" },
+    { "source": "/cadastro-paciente.html", "destination": "/frontend/cadastro-paciente.html" },
+    { "source": "/paciente", "destination": "/frontend/paciente.html" },
+    { "source": "/paciente.html", "destination": "/frontend/paciente.html" },
+    { "source": "/nova-consulta", "destination": "/frontend/nova-consulta.html" },
+    { "source": "/nova-consulta.html", "destination": "/frontend/nova-consulta.html" },
+    { "source": "/prontuario_completo", "destination": "/frontend/prontuario_completo.html" },
+    { "source": "/prontuario_completo.html", "destination": "/frontend/prontuario_completo.html" },
+    { "source": "/cadastro-usuarios", "destination": "/frontend/cadastro-usuarios.html" },
+    { "source": "/cadastro-usuarios.html", "destination": "/frontend/cadastro-usuarios.html" },
+    { "source": "/imprimir", "destination": "/frontend/imprimir.html" },
+    { "source": "/imprimir.html", "destination": "/frontend/imprimir.html" },
+    { "source": "/(.*)", "destination": "/frontend/404.html" }
+  ]
+}
